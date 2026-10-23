@@ -1549,7 +1549,7 @@ pub fn set(app: &mut SolveApp, p: &serde_json::Value) -> Result<serde_json::Valu
         app.ui.dark = file.map_or(new.theme == "dark", |f| f.base.is_dark());
     }
     let up_changed = new.up_axis != app.preferences.up_axis;
-    let msaa_changed = new.msaa != app.preferences.msaa;
+    let msaa_changed = new.msaa != app.preferences.msaa || new.window_system != app.preferences.window_system;
     if p.get("layout").is_some() {
         app.ui.layout = new.layout;
     }
