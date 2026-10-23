@@ -1074,18 +1074,16 @@ fn window_system_row(app: &mut SolveApp, ui: &mut egui::Ui) {
     let t = Tokens::get();
     let label = |id: &str| crate::i18n::tr(&format!("ui.window_system_{id}")).to_string();
     let labels = WINDOW_SYSTEMS.map(label);
-    ui.horizontal_wrapped(|ui| {
-        let response = ui.allocate_ui_with_layout(egui::vec2(t.form_card_width, 0.0), egui::Layout::top_down(egui::Align::Min), |ui| {
-            let mut selected = WINDOW_SYSTEMS.iter().position(|id| *id == app.preferences.window_system).unwrap_or(0);
-            if ui_kit::segmented(ui, &mut selected, &labels.each_ref().map(String::as_str), ui_kit::Segments::default())
-                && let Some(id) = WINDOW_SYSTEMS.get(selected)
-            {
-                app.preferences.window_system = (*id).into();
-            }
-        });
-        crate::scenario::publish_handle("prefs:window_system", response.response.rect.center());
-        ui_kit::settings_badge(ui, app.tr("prefs.applies_on_restart"), true);
+    // The note below says that it applies after a restart, and which one runs now.
+    let response = ui.allocate_ui_with_layout(egui::vec2(t.form_card_width, 0.0), egui::Layout::top_down(egui::Align::Min), |ui| {
+        let mut selected = WINDOW_SYSTEMS.iter().position(|id| *id == app.preferences.window_system).unwrap_or(0);
+        if ui_kit::segmented(ui, &mut selected, &labels.each_ref().map(String::as_str), ui_kit::Segments::default())
+            && let Some(id) = WINDOW_SYSTEMS.get(selected)
+        {
+            app.preferences.window_system = (*id).into();
+        }
     });
+    crate::scenario::publish_handle("prefs:window_system", response.response.rect.center());
     let now = app.services.window_system.map(label);
     let text = match &now {
         Some(now) => crate::i18n::format("settings.window_system_note_now", &[("now", now)]),
